@@ -1,3 +1,3 @@
 # DSG
 
-> Dynamic Static Generator
+> Dynamic Site Generator
