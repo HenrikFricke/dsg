@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactMarkdown from "react-markdown";
 
-import { readFileSync } from "fs";
-import { resolve } from "path";
+import { Query, QueryResult } from "react-apollo";
 import { RouteComponentProps } from "react-router";
 
+import { FETCH_ARTICLE } from "../client";
 import { StaticRouterContext } from "../router";
 import { NoMatch } from "./NoMatch";
 
@@ -14,16 +14,32 @@ export interface Params {
 
 export type Props = RouteComponentProps<Params, StaticRouterContext>;
 
-export const BlogPost: React.StatelessComponent<Props> = props => {
-  try {
-    const markdownFile = resolve(
-      __dirname,
-      `../articles/${props.match.params.article}.md`
-    );
-    const markdown = readFileSync(markdownFile);
+interface FetchArticlesQueryArticle {
+  path: string;
+  markdown: string;
+}
 
-    return <ReactMarkdown source={markdown.toString()} />;
-  } catch (err) {
-    return <NoMatch {...props} />;
-  }
+interface FetchArticleQuery {
+  article: FetchArticlesQueryArticle;
+}
+
+export const BlogPost: React.StatelessComponent<Props> = props => {
+  return (
+    <Query
+      query={FETCH_ARTICLE}
+      variables={{ path: props.match.params.article }}
+    >
+      {({ data, loading, error }: QueryResult<FetchArticleQuery>) => {
+        if (loading) {
+          return null;
+        }
+
+        if (error || data === undefined) {
+          return <NoMatch {...props} />;
+        }
+
+        return <ReactMarkdown source={data.article.markdown.toString()} />;
+      }}
+    </Query>
+  );
 };

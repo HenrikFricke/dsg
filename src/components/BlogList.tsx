@@ -1,34 +1,37 @@
 import * as React from "react";
 
-import { readdirSync } from "fs";
-import { resolve } from "path";
+import { Query, QueryResult } from "react-apollo";
 import { Link } from "react-router-dom";
 
-export interface Params {
-  article: string;
+import { FETCH_ARTICLES } from "../client";
+
+interface FetchArticlesQueryArticle {
+  path: string;
+  markdown: string;
+}
+
+interface FetchArticlesQuery {
+  articles: FetchArticlesQueryArticle[];
 }
 
 export const BlogList: React.StatelessComponent<{}> = () => {
-  try {
-    const markdownDir = resolve(__dirname, `../articles`);
-    const markdownFiles = readdirSync(markdownDir);
+  return (
+    <Query query={FETCH_ARTICLES}>
+      {({ data, loading, error }: QueryResult<FetchArticlesQuery>) => {
+        if (loading || error || data === undefined) {
+          return null;
+        }
 
-    return (
-      <ul>
-        {markdownFiles.map(file => {
-          const fileWithoutExtension = file.split(".")[0];
-
-          return (
-            <li key={fileWithoutExtension}>
-              <Link to={`blog/${fileWithoutExtension}`}>
-                {fileWithoutExtension}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    );
-  } catch (err) {
-    return null;
-  }
+        return (
+          <ul>
+            {data.articles.map(({ path }) => (
+              <li key={path}>
+                <Link to={`blog/${path}`}>{path}</Link>
+              </li>
+            ))}
+          </ul>
+        );
+      }}
+    </Query>
+  );
 };

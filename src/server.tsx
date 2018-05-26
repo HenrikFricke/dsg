@@ -3,19 +3,24 @@ config();
 
 import * as React from "react";
 
+import { microGraphiql, microGraphql } from "apollo-server-micro";
+import { IncomingMessage, ServerResponse } from "http";
 import micro from "micro";
+import { get, post, router } from "microrouter";
 import { ApolloProvider, renderToStringWithData } from "react-apollo";
 import { renderToStaticMarkup } from "react-dom/server";
-
-import { IncomingMessage, ServerResponse } from "http";
 import { StaticRouter } from "react-router";
 
 import { App } from "./components/App";
 import { Html } from "./components/Html";
-import { client } from "./githubClient";
+import { client } from "./client";
 import { StaticRouterContext } from "./router";
+import { schema } from "./graphql/schema";
 
-const server = micro(async (req: IncomingMessage, res: ServerResponse) => {
+const graphqlHandler = microGraphql({ schema });
+const graphiqlHandler = microGraphiql({ endpointURL: "/graphql" });
+
+const viewRenderer = async (req: IncomingMessage, res: ServerResponse) => {
   const context: StaticRouterContext = {};
 
   const component = (
@@ -32,6 +37,15 @@ const server = micro(async (req: IncomingMessage, res: ServerResponse) => {
   res.statusCode = context.status || context.statusCode || 200;
   res.write(`<!doctype html>\n${html}`);
   res.end();
-});
+};
+
+const server = micro(
+  router(
+    get("/graphql", graphqlHandler),
+    post("/graphql", graphqlHandler),
+    get("/graphiql", graphiqlHandler),
+    viewRenderer
+  )
+);
 
 server.listen(process.env.PORT || 3000);

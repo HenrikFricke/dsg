@@ -1,18 +1,14 @@
 import * as React from "react";
 import { Query, QueryResult } from "react-apollo";
 
-import { FETCH_REPOSITORIES } from "../githubClient";
+import { FETCH_REPOSITORIES } from "../client";
 
 interface FetchRepositoriesQueryRepository {
   name: string;
 }
 
 interface FetchRepositoriesQuery {
-  user: {
-    repositories: {
-      nodes: FetchRepositoriesQueryRepository[];
-    };
-  };
+  repositories: FetchRepositoriesQueryRepository[];
 }
 
 export const Repositories: React.StatelessComponent = () => {
@@ -29,9 +25,7 @@ export const Repositories: React.StatelessComponent = () => {
 
         return (
           <ul>
-            {data.user.repositories.nodes.map(({ name }) => (
-              <li key={name}>{name}</li>
-            ))}
+            {data.repositories.map(({ name }) => <li key={name}>{name}</li>)}
           </ul>
         );
       }}
