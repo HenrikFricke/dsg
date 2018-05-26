@@ -12,7 +12,8 @@
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "es6",
-    "jsx": "react"
+    "jsx": "react",
+    "lib": ["es6", "dom", "es2015.core", "esnext.asynciterable"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules/**/*"]
