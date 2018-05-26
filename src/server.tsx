@@ -1,23 +1,30 @@
+import { config } from "dotenv";
+config();
+
 import * as React from "react";
 
 import micro, { send } from "micro";
+import { ApolloProvider, renderToStringWithData } from "react-apollo";
 
 import { IncomingMessage, ServerResponse } from "http";
-import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router";
 
 import { App } from "./components/App";
+import { client } from "./githubClient";
 import { StaticRouterContext } from "./router";
 
-const server = micro((req: IncomingMessage, res: ServerResponse) => {
+const server = micro(async (req: IncomingMessage, res: ServerResponse) => {
   const context: StaticRouterContext = {};
 
-  const html = renderToString(
+  const component = (
     <StaticRouter location={req.url} context={context}>
-      <App />
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
     </StaticRouter>
   );
 
+  const html = await renderToStringWithData(component);
   send(res, context.status || context.statusCode || 200, html);
 });
 
