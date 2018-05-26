@@ -10,5 +10,5 @@ export const NoMatch: React.StatelessComponent<Props> = props => {
     props.staticContext.status = 404;
   }
 
-  return <h1>NoMatch</h1>;
+  return <h1>404</h1>;
 };

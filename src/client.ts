@@ -13,6 +13,27 @@ export const client = new ApolloClient({
   })
 });
 
+export interface FetchArticlesQueryArticle {
+  path: string;
+  markdown: string;
+}
+
+export interface FetchArticlesQuery {
+  articles: FetchArticlesQueryArticle[];
+}
+
+export interface FetchRepositoriesQueryRepository {
+  name: string;
+}
+
+export interface FetchRepositoriesQuery {
+  repositories: FetchRepositoriesQueryRepository[];
+}
+
+export interface FetchArticleQuery {
+  article?: FetchArticlesQueryArticle;
+}
+
 export const FETCH_REPOSITORIES = gql`
   query {
     repositories {
