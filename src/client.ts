@@ -9,26 +9,31 @@ import gql from "graphql-tag";
 export const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
-    headers: {
-      Authorization: process.env.GITHUB_TOKEN
-    },
-    uri: "https://api.github.com/graphql"
+    uri: `${process.env.DSG_BASE_URL}/graphql`
   })
 });
 
 export const FETCH_REPOSITORIES = gql`
-  {
-    user(login: "HenrikFricke") {
-      repositories(
-        first: 10
-        privacy: PUBLIC
-        isFork: false
-        orderBy: { field: CREATED_AT, direction: DESC }
-      ) {
-        nodes {
-          name
-        }
-      }
+  query {
+    repositories {
+      name
+    }
+  }
+`;
+
+export const FETCH_ARTICLES = gql`
+  query {
+    articles {
+      path
+    }
+  }
+`;
+
+export const FETCH_ARTICLE = gql`
+  query Article($path: String!) {
+    article(path: $path) {
+      path
+      markdown
     }
   }
 `;
