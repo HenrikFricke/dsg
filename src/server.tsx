@@ -3,13 +3,15 @@ config();
 
 import * as React from "react";
 
-import micro, { send } from "micro";
+import micro from "micro";
 import { ApolloProvider, renderToStringWithData } from "react-apollo";
+import { renderToStaticMarkup } from "react-dom/server";
 
 import { IncomingMessage, ServerResponse } from "http";
 import { StaticRouter } from "react-router";
 
 import { App } from "./components/App";
+import { Html } from "./components/Html";
 import { client } from "./githubClient";
 import { StaticRouterContext } from "./router";
 
@@ -24,8 +26,12 @@ const server = micro(async (req: IncomingMessage, res: ServerResponse) => {
     </StaticRouter>
   );
 
-  const html = await renderToStringWithData(component);
-  send(res, context.status || context.statusCode || 200, html);
+  const content = await renderToStringWithData(component);
+  const html = renderToStaticMarkup(<Html content={content} />);
+
+  res.statusCode = context.status || context.statusCode || 200;
+  res.write(`<!doctype html>\n${html}`);
+  res.end();
 });
 
 server.listen(process.env.PORT || 3000);
