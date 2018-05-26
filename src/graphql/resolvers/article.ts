@@ -15,6 +15,6 @@ export function article(obj: any, args: Arguments) {
       path: args.path
     };
   } catch (err) {
-    throw new Error(err);
+    return null;
   }
 }
