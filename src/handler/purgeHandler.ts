@@ -1,13 +1,16 @@
 import { createHmac } from "crypto";
+import { text } from "micro";
 import { ServerRequest, ServerResponse } from "microrouter";
 
 export async function purgeHandler(req: ServerRequest, res: ServerResponse) {
+  const payload = await text(req);
+
   const hash = createHmac("sha1", process.env.WEBHOOK_PURGE_SECRET || "")
-    .update(JSON.stringify(req.params))
+    .update(payload)
     .digest("hex");
   const signature = `sha1=${hash}`;
 
-  if (signature !== req.headers.http_x_hub_signature) {
+  if (signature !== req.headers["x-hub-signature"]) {
     res.statusCode = 400;
   } else {
     const requestBody = { purge_everything: true };
