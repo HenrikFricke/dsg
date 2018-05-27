@@ -17,6 +17,11 @@ const typeDefs = `
   type Article { path: String, markdown: String }
 `;
 
+export interface Article {
+  path: string;
+  markdown: string;
+}
+
 // The resolvers
 const resolvers = {
   Query: {

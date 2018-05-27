@@ -1,20 +1,31 @@
-import { readFileSync } from "fs";
-import { resolve } from "path";
+import {
+  FETCH_ARTICLE,
+  FetchArticleQuery,
+  githubClient
+} from "../githubClient";
+
+import { Article } from "../schema";
 
 interface Arguments {
   path: string;
 }
 
-export function article(obj: any, args: Arguments) {
-  try {
-    const markdownFile = resolve(__dirname, `../../articles/${args.path}.md`);
-    const markdown = readFileSync(markdownFile);
+export async function article(
+  obj: any,
+  args: Arguments
+): Promise<Article | null> {
+  const response = await githubClient.query<FetchArticleQuery>({
+    query: FETCH_ARTICLE,
+    variables: { expression: `master:${args.path}.md` }
+  });
+  const object = response.data.repository.object;
 
-    return {
-      markdown: markdown.toString(),
-      path: args.path
-    };
-  } catch (err) {
+  if (!object) {
     return null;
   }
+
+  return {
+    markdown: object.text,
+    path: args.path
+  };
 }
