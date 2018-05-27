@@ -8,6 +8,11 @@ import gql from "graphql-tag";
 
 export const client = new ApolloClient({
   cache: new InMemoryCache(),
+  defaultOptions: {
+    query: {
+      fetchPolicy: "network-only"
+    }
+  },
   link: new HttpLink({
     uri: `${process.env.DSG_BASE_URL}/graphql`
   })

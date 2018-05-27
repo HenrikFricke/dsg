@@ -1,22 +1,18 @@
-import { readdirSync, readFileSync } from "fs";
-import { resolve } from "path";
+import {
+  FETCH_ARTICLES,
+  FetchArticlesQuery,
+  githubClient
+} from "../githubClient";
 
-export function articles() {
-  try {
-    const markdownDir = resolve(__dirname, `../../articles`);
-    const markdownFiles = readdirSync(markdownDir);
+import { Article } from "../schema";
 
-    return markdownFiles.map(file => {
-      const fileWithoutExtension = file.split(".")[0];
-      const markdownFile = resolve(__dirname, `../../articles/${file}`);
-      const markdown = readFileSync(markdownFile);
+export async function articles(): Promise<Article[]> {
+  const response = await githubClient.query<FetchArticlesQuery>({
+    query: FETCH_ARTICLES
+  });
 
-      return {
-        markdown: markdown.toString(),
-        path: fileWithoutExtension
-      };
-    });
-  } catch (err) {
-    return [];
-  }
+  return response.data.repository.object.entries.map(entry => ({
+    markdown: entry.object.text,
+    path: entry.name.split(".")[0]
+  }));
 }

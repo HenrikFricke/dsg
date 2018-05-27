@@ -11,11 +11,11 @@ import { ApolloProvider, renderToStringWithData } from "react-apollo";
 import { renderToStaticMarkup } from "react-dom/server";
 import { StaticRouter } from "react-router";
 
+import { client } from "./client";
 import { App } from "./components/App";
 import { Html } from "./components/Html";
-import { client } from "./client";
-import { StaticRouterContext } from "./router";
 import { schema } from "./graphql/schema";
+import { StaticRouterContext } from "./router";
 
 const graphqlHandler = microGraphql({ schema });
 const graphiqlHandler = microGraphiql({ endpointURL: "/graphql" });
