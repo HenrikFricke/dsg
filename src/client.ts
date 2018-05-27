@@ -10,7 +10,7 @@ export const client = new ApolloClient({
   cache: new InMemoryCache(),
   defaultOptions: {
     query: {
-      fetchPolicy: "no-cache"
+      fetchPolicy: "network-only"
     }
   },
   link: new HttpLink({
