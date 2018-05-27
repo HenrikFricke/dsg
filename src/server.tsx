@@ -25,7 +25,7 @@ const viewRenderer = async (req: IncomingMessage, res: ServerResponse) => {
 
   const component = (
     <StaticRouter location={req.url} context={context}>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={client()}>
         <App />
       </ApolloProvider>
     </StaticRouter>

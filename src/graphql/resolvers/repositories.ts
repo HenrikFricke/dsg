@@ -1,13 +1,25 @@
 import {
   FETCH_REPOSITORIES,
   FetchRepositoriesQuery,
-  githubClient
-} from "../githubClient";
+  GITHUB_ENDPOINT
+} from "../github";
 
 export async function repositories() {
-  const response = await githubClient.query<FetchRepositoriesQuery>({
+  const requestBody = {
     query: FETCH_REPOSITORIES
+  };
+
+  const response = await fetch(GITHUB_ENDPOINT, {
+    body: JSON.stringify(requestBody),
+    headers: {
+      Authorization: process.env.GITHUB_TOKEN || "",
+      "Content-Type": "application/json"
+    },
+    method: "POST"
   });
 
-  return response.data.user.repositories.nodes;
+  const body = await response.json();
+  const data = body.data as FetchRepositoriesQuery;
+
+  return data.user.repositories.nodes;
 }

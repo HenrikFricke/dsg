@@ -1,9 +1,4 @@
-import {
-  FETCH_ARTICLE,
-  FetchArticleQuery,
-  githubClient
-} from "../githubClient";
-
+import { FETCH_ARTICLE, FetchArticleQuery, GITHUB_ENDPOINT } from "../github";
 import { Article } from "../schema";
 
 interface Arguments {
@@ -14,11 +9,25 @@ export async function article(
   obj: any,
   args: Arguments
 ): Promise<Article | null> {
-  const response = await githubClient.query<FetchArticleQuery>({
+  const requestBody = {
     query: FETCH_ARTICLE,
-    variables: { expression: `master:${args.path}.md` }
+    variables: {
+      expression: `master:${args.path}.md`
+    }
+  };
+
+  const response = await fetch(GITHUB_ENDPOINT, {
+    body: JSON.stringify(requestBody),
+    headers: {
+      Authorization: process.env.GITHUB_TOKEN || "",
+      "Content-Type": "application/json"
+    },
+    method: "POST"
   });
-  const object = response.data.repository.object;
+
+  const body = await response.json();
+  const data = body.data as FetchArticleQuery;
+  const object = data.repository.object;
 
   if (!object) {
     return null;

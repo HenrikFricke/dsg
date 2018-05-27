@@ -6,17 +6,14 @@ import { HttpLink } from "apollo-link-http";
 
 import gql from "graphql-tag";
 
-export const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  defaultOptions: {
-    query: {
-      fetchPolicy: "network-only"
-    }
-  },
-  link: new HttpLink({
-    uri: `${process.env.DSG_BASE_URL}/graphql`
-  })
-});
+export const client = () =>
+  new ApolloClient({
+    cache: new InMemoryCache(),
+    link: new HttpLink({
+      uri: `${process.env.DSG_BASE_URL}/graphql`
+    }),
+    ssrMode: true
+  });
 
 export interface FetchArticlesQueryArticle {
   path: string;

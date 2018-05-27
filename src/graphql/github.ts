@@ -1,23 +1,4 @@
-import gql from "graphql-tag";
-
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { ApolloClient } from "apollo-client";
-import { HttpLink } from "apollo-link-http";
-
-export const githubClient = new ApolloClient({
-  cache: new InMemoryCache(),
-  defaultOptions: {
-    query: {
-      fetchPolicy: "network-only"
-    }
-  },
-  link: new HttpLink({
-    headers: {
-      Authorization: process.env.GITHUB_TOKEN
-    },
-    uri: "https://api.github.com/graphql"
-  })
-});
+export const GITHUB_ENDPOINT = "https://api.github.com/graphql";
 
 export interface FetchRepositoriesQueryRepository {
   name: string;
@@ -31,7 +12,7 @@ export interface FetchRepositoriesQuery {
   };
 }
 
-export const FETCH_REPOSITORIES = gql`
+export const FETCH_REPOSITORIES = `
   query {
     user(login: "HenrikFricke") {
       repositories(
@@ -63,7 +44,7 @@ export interface FetchArticlesQuery {
   };
 }
 
-export const FETCH_ARTICLES = gql`
+export const FETCH_ARTICLES = `
   query {
     repository(owner: "HenrikFricke", name: "dsg-blogposts") {
       object(expression: "master:") {
@@ -90,7 +71,7 @@ export interface FetchArticleQuery {
   };
 }
 
-export const FETCH_ARTICLE = gql`
+export const FETCH_ARTICLE = `
   query Article($expression: String!) {
     repository(owner: "HenrikFricke", name: "dsg-blogposts") {
       object(expression: $expression) {
