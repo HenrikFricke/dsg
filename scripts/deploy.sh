@@ -1,7 +1,7 @@
 #!/bin/sh
 
 now -e GITHUB_TOKEN=@github_token \
-  -e DSG_BASE_URL=https://dsg.now.sh \
+  -e DSG_BASE_URL=https://dsg.vellm.io \
   -e CLOUDFLARE_API_KEY=@cloudflareapikey \
   -e CLOUDFLARE_AUTH_EMAIL=@cloudflareauthemail \
   -e CLOUDFLARE_PURGE_CACHE_ENDPOINT=@cloudflarepurgecacheendpoint \
