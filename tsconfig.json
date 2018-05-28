@@ -11,6 +11,7 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
+    "outDir": "dist",
     "target": "es6",
     "jsx": "react",
     "lib": ["es6", "dom", "es2015.core", "esnext.asynciterable"]

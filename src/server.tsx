@@ -7,6 +7,7 @@ import { microGraphiql, microGraphql } from "apollo-server-micro";
 import { get, post, router } from "microrouter";
 
 import { schema } from "./graphql/schema";
+import { assetsHandler } from "./handler/assetsHandler";
 import { purgeHandler } from "./handler/purgeHandler";
 import { websiteHandler } from "./handler/websiteHandler";
 
@@ -19,6 +20,7 @@ const server = micro(
     get("/graphql", graphqlHandler),
     post("/graphql", graphqlHandler),
     get("/graphiql", graphiqlHandler),
+    get("/assets/:file", assetsHandler),
     websiteHandler
   )
 );
